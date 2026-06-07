@@ -4,22 +4,34 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FAFAFA',
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center', 
+    padding: 24, 
+  },
+  passwordContainer: {
+    position: 'relative', 
     justifyContent: 'center',
-    padding: 24,
+  },
+  eyeIcon: {
+    position: 'absolute', 
+    right: 15,
   },
   logoContainer: {
     alignItems: 'center',
     marginBottom: 60,
   },
-  logoText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    borderWidth: 2,
-    borderColor: '#333',
-    padding: 20,
-    borderRadius: 12,
+  
+  logoImage: {
+    width: 150,
+    height: 150,
+    resizeMode: 'contain',
   },
+
   formContainer: {
     width: '100%',
   },

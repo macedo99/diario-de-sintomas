@@ -5,16 +5,26 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FAFAFA',
   },
+  keyboardView: {
+    flex: 1,
+  },
   scrollContent: {
+    flexGrow: 1,
     padding: 24,
-    paddingBottom: 40,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 24,
     textAlign: 'center',
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 10,
+    marginBottom: 12,
   },
   label: {
     fontSize: 14,
@@ -27,24 +37,26 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E0E0E0',
     borderRadius: 8,
-    padding: 12,
+    padding: 16,
     marginBottom: 16,
     fontSize: 16,
+  },
+  passwordContainer: {
+    position: 'relative', 
+    justifyContent: 'center',
+  },
+  eyeIcon: {
+    position: 'absolute', 
+    right: 15,
+    top: 18,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 12,
+    marginBottom: 10,
   },
   flexInput: {
-    flex: 1,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 10,
-    marginBottom: 12,
+    flex: 0.48,
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -58,8 +70,7 @@ export const styles = StyleSheet.create({
     borderColor: '#333',
     borderRadius: 4,
     marginRight: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#FFF',
   },
   checkboxSelected: {
     backgroundColor: '#333',
@@ -73,7 +84,8 @@ export const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
-    marginTop: 24,
+    marginTop: 20,
+    marginBottom: 15,
   },
   buttonText: {
     color: '#FFF',
@@ -81,9 +93,8 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   backButton: {
-    marginTop: 16,
-    padding: 10,
     alignItems: 'center',
+    marginBottom: 30,
   },
   backButtonText: {
     color: '#555',
