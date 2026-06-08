@@ -24,6 +24,8 @@ export function Login({ navigation }: any) {
       return;
     }
     console.log('Tentativa de login:', { username, senha });
+    
+    navigation.replace('Home');
   };
 
   return (
