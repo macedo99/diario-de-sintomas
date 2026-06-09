@@ -6,6 +6,8 @@ import { Login } from '../screens/login/Login';
 import { Cadastro } from '../screens/cadastro/Cadastro';
 import { Home } from '../screens/home/Home';
 import { NovoRegistro } from '../screens/novoRegistro/NovoRegistro';
+import { Relatorio } from '../screens/relatorio/Relatorio';
+import { Perfil } from '../screens/perfil/Perfil';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,6 +19,8 @@ export function Routes() {
         <Stack.Screen name="Cadastro" component={Cadastro} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="NovoRegistro" component={NovoRegistro} />
+        <Stack.Screen name="Relatorio" component={Relatorio} />
+        <Stack.Screen name="Perfil" component={Perfil} />
       </Stack.Navigator>
     </NavigationContainer>
   );

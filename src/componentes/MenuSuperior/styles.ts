@@ -3,12 +3,12 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.1)', // Fundo levemente escurecido
+    backgroundColor: 'rgba(0,0,0,0.1)',
   },
   menuContainer: {
     position: 'absolute',
-    top: 60, // Distância do topo para ficar alinhado ao botão
-    right: 20, // Distância da borda direita
+    top: 60,
+    right: 20,
     backgroundColor: '#FFF',
     borderRadius: 8,
     paddingVertical: 8,

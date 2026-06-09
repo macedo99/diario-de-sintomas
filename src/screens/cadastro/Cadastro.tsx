@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   View, 
   Text, 
-  TextInput, 
   TouchableOpacity, 
   KeyboardAvoidingView, 
   Platform,
@@ -11,6 +10,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { styles } from './styles';
+import { InputPadrao } from '../../componentes/InputPadrao/InputPadrao';
+import { BotaoPadrao } from '../../componentes/BotaoPadrao/BotaoPadrao';
 
 export function Cadastro({ navigation }: any) {
   const [username, setUsername] = useState('');
@@ -27,15 +28,16 @@ export function Cadastro({ navigation }: any) {
   const [diabetes, setDiabetes] = useState(false);
 
   const handleDataNascChange = (text: string) => {
-    const apenasNumeros = text.replace(/\D/g, '');
-    let dataFormatada = apenasNumeros;
-    if (apenasNumeros.length > 2) {
-      dataFormatada = `${apenasNumeros.slice(0, 2)}/${apenasNumeros.slice(2)}`;
+    let num = text.replace(/\D/g, '');
+
+    if (num.length > 2) {
+      num = num.replace(/^(\d{2})(\d)/, '$1/$2');
     }
-    if (apenasNumeros.length > 4) {
-      dataFormatada = `${apenasNumeros.slice(0, 2)}/${apenasNumeros.slice(2, 4)}/${apenasNumeros.slice(4, 8)}`;
+    if (num.length > 5) {
+      num = num.replace(/^(\d{2})\/(\d{2})(\d)/, '$1/$2/$3');
     }
-    setDataNasc(dataFormatada);
+
+    setDataNasc(num.substring(0, 10));
   };
 
   const handleCadastro = () => {
@@ -59,23 +61,23 @@ export function Cadastro({ navigation }: any) {
         >
           <Text style={styles.title}>Criar Conta</Text>
 
-          <Text style={styles.label}>Username</Text>
-          <TextInput 
-            style={styles.input} 
+          <InputPadrao 
+            label="Username"
             placeholder="Ex: joao.silva" 
             autoCapitalize="none" 
             value={username}
             onChangeText={setUsername}
           />
 
-          <Text style={styles.label}>Senha</Text>
           <View style={styles.passwordContainer}>
-            <TextInput 
-              style={styles.input} 
+            <InputPadrao 
+              label="Senha"
               placeholder="Crie uma senha forte" 
-              secureTextEntry={!mostrarSenha} 
+              secureTextEntry={!mostrarSenha}
+              autoCapitalize="none" 
               value={senha}
               onChangeText={setSenha}
+              style={{ paddingRight: 50 }}
             />
             <TouchableOpacity 
               style={styles.eyeIcon} 
@@ -90,9 +92,8 @@ export function Cadastro({ navigation }: any) {
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.label}>Nome Completo</Text>
-          <TextInput 
-            style={styles.input} 
+          <InputPadrao 
+            label="Nome Completo"
             placeholder="Digite seu nome" 
             value={nome}
             onChangeText={setNome}
@@ -120,11 +121,10 @@ export function Cadastro({ navigation }: any) {
             <Text style={styles.checkboxText}>Diabetes</Text>
           </TouchableOpacity>
 
-          <View style={styles.row}>
-            <View style={styles.flexInput}>
-              <Text style={styles.label}>Data Nasc.</Text>
-              <TextInput 
-                style={styles.input} 
+          <View style={[styles.row, { marginTop: 10 }]}>
+            <View style={{ flex: 1 }}>
+              <InputPadrao 
+                label="Data Nasc."
                 placeholder="DD/MM/AAAA" 
                 keyboardType="numeric" 
                 maxLength={10} 
@@ -136,30 +136,32 @@ export function Cadastro({ navigation }: any) {
 
           <View style={styles.row}>
             <View style={styles.flexInput}>
-              <Text style={styles.label}>Peso (kg)</Text>
-              <TextInput 
-                style={styles.input} 
+              <InputPadrao 
+                label="Peso (kg)"
                 placeholder="Ex: 75.5" 
-                keyboardType="numeric" 
+                keyboardType="numeric"
+                maxLength={5} 
                 value={peso}
                 onChangeText={setPeso}
               />
             </View>
             <View style={styles.flexInput}>
-              <Text style={styles.label}>Altura (cm)</Text>
-              <TextInput 
-                style={styles.input} 
+              <InputPadrao 
+                label="Altura (cm)"
                 placeholder="Ex: 175" 
                 keyboardType="numeric" 
+                maxLength={3}
                 value={altura}
                 onChangeText={setAltura}
               />
             </View>
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={handleCadastro}>
-            <Text style={styles.buttonText}>Cadastrar</Text>
-          </TouchableOpacity>
+          <BotaoPadrao 
+            texto="Cadastrar"
+            onPress={handleCadastro}
+            style={{ marginBottom: 15 }}
+          />
 
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <Text style={styles.backButtonText}>Já possui conta? Volte para o Login</Text>

@@ -12,23 +12,28 @@ interface MenuSuperiorProps {
 export function MenuSuperior({ visivel, onClose, navigation }: MenuSuperiorProps) {
   const handleAcao = (acao: string) => {
     onClose(); // Fecha o menu primeiro
+    
     if (acao === 'Sair') {
-      navigation.replace('Login'); // Desloga e impede de voltar com botão físico
-    } else {
-      console.log(`Navegar para: ${acao}`);
-      // Futuramente: navigation.navigate('Relatorios')
+      navigation.replace('Login'); 
+    } else if (acao === 'Relatorio') {
+      navigation.navigate('Relatorio'); 
+    } else if (acao === 'Perfil') {
+      navigation.navigate('Perfil');
     }
   };
 
   return (
     <Modal visible={visivel} transparent={true} animationType="fade">
-      {/* Clicar fora do menu fecha o Modal */}
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.overlay}>
-          {/* Este View impede que clicar DENTRO do menu feche ele */}
           <TouchableWithoutFeedback>
             <View style={styles.menuContainer}>
               
+              <TouchableOpacity style={styles.menuItem} onPress={() => handleAcao('Perfil')}>
+                <Feather name="user" size={20} color="#333" />
+                <Text style={styles.menuText}>Meu Perfil</Text>
+              </TouchableOpacity>
+
               <TouchableOpacity style={styles.menuItem} onPress={() => handleAcao('Relatorio')}>
                 <Feather name="file-text" size={20} color="#333" />
                 <Text style={styles.menuText}>Relatórios</Text>

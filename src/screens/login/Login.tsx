@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { 
   View, 
-  Text, 
-  TextInput, 
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Image
+  Image,
+  Text
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { styles } from './styles';
+import { InputPadrao } from '../../componentes/InputPadrao/InputPadrao';
+import { BotaoPadrao } from '../../componentes/BotaoPadrao/BotaoPadrao';
 
 export function Login({ navigation }: any) {
   const [username, setUsername] = useState('');
@@ -24,7 +25,6 @@ export function Login({ navigation }: any) {
       return;
     }
     console.log('Tentativa de login:', { username, senha });
-    
     navigation.replace('Home');
   };
 
@@ -47,23 +47,24 @@ export function Login({ navigation }: any) {
           </View>
 
           <View style={styles.formContainer}>
-            <Text style={styles.label}>Username</Text>
-            <TextInput 
-              style={styles.input} 
+            
+            <InputPadrao 
+              label="Username"
               placeholder="Digite seu usuário" 
               autoCapitalize="none"
               value={username}
               onChangeText={setUsername}
             />
 
-            <Text style={styles.label}>Senha</Text>
             <View style={styles.passwordContainer}>
-              <TextInput 
-                style={styles.input} 
+              <InputPadrao 
+                label="Senha"
                 placeholder="Digite sua senha" 
-                secureTextEntry={!mostrarSenha} 
+                secureTextEntry={!mostrarSenha}
+                autoCapitalize="none"
                 value={senha}
                 onChangeText={setSenha}
+                style={{ paddingRight: 50 }} 
               />
               <TouchableOpacity 
                 style={styles.eyeIcon} 
@@ -78,13 +79,16 @@ export function Login({ navigation }: any) {
               </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>Entrar</Text>
-            </TouchableOpacity>
+            <BotaoPadrao 
+              texto="Entrar" 
+              onPress={handleLogin} 
+              style={{ marginTop: 10 }}
+            />
 
             <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
               <Text style={styles.linkText}>Não possui conta? Cadastre-se</Text>
             </TouchableOpacity>
+
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

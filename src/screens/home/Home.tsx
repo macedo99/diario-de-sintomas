@@ -11,51 +11,34 @@ import { Feather } from '@expo/vector-icons';
 import { styles } from './styles';
 import { MenuSuperior } from '../../componentes/MenuSuperior/MenuSuperior';
 
-// Dados fictícios
 const mockRegistros = [
   {
     id: '1',
     tipo: 'Enxaqueca',
     dataHora: '09/04/26 - 17:58',
     icone: 'zap',
-    detalhes: [
-      'Intensidade: 8/10', 
-      'Gatilhos: Noite mal dormida, Estresse', 
-      'Medicou: Sim (Neosaldina)'
-    ],
+    detalhes: ['Intensidade: 8/10', 'Gatilhos: Noite mal dormida, Estresse', 'Medicou: Sim (Neosaldina)'],
   },
   {
     id: '2',
     tipo: 'Pressão Arterial',
     dataHora: '10/04/26 - 12:21',
     icone: 'heart',
-    detalhes: [
-      'Pressão: 130/85', 
-      'BPM: 72', 
-      'Notas: Medição antes do café'
-    ],
+    detalhes: ['Pressão: 130/85', 'BPM: 72', 'Notas: Medição antes do café'],
   },
   {
     id: '3',
     tipo: 'Diabetes',
     dataHora: '10/04/26 - 12:39',
     icone: 'droplet',
-    detalhes: [
-      'Glicemia: 145 mg/dL', 
-      'Momento: Pós-almoço', 
-      'Insulina: Não aplicada'
-    ],
+    detalhes: ['Glicemia: 145 mg/dL', 'Momento: Pós-almoço', 'Insulina: Não aplicada'],
   },
   {
     id: '4',
     tipo: 'Crise Alérgica',
     dataHora: '11/04/26 - 17:41',
     icone: 'hash',
-    detalhes: [
-      'Intensidade: 7/10', 
-      'Sintomas: Espirros, coceira, coriza', 
-      'Notas: Crise forte enquanto limpava'
-    ],
+    detalhes: ['Intensidade: 7/10', 'Sintomas: Espirros, coceira, coriza', 'Notas: Crise forte enquanto limpava'],
   }
 ];
 
@@ -84,10 +67,7 @@ export function Home({ navigation }: any) {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Image 
-            source={require('../../assets/logo.png')} 
-            style={styles.logo} 
-          />
+          <Image source={require('../../assets/logo.png')} style={styles.logo} />
           <Text style={styles.greeting}>Olá, usuário!</Text>
         </View>
         

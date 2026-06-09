@@ -5,9 +5,6 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FAFAFA',
   },
-  keyboardView: {
-    flex: 1,
-  },
   scrollContent: {
     flexGrow: 1,
     padding: 24,
@@ -24,6 +21,12 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
+  label: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 8,
+    fontWeight: 'bold',
+  },
   dropdown: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -33,66 +36,61 @@ export const styles = StyleSheet.create({
     borderColor: '#E0E0E0',
     borderRadius: 8,
     padding: 16,
-    marginBottom: 24,
+    marginBottom: 32,
   },
   dropdownText: {
     fontSize: 16,
     color: '#333',
-    fontWeight: '600',
   },
-  label: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 8,
-    fontWeight: '600',
-  },
-  textArea: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-  row: {
+  checkboxCard: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  halfInput: {
-    width: '48%',
-  },
-  toggleContainer: {
-    flexDirection: 'row',
-    marginBottom: 20,
-  },
-  toggleBtn: {
-    flex: 1,
-    padding: 12,
+    alignItems: 'center',
+    backgroundColor: '#FFF',
     borderWidth: 1,
     borderColor: '#E0E0E0',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderWidth: 2,
+    borderColor: '#333',
+    borderRadius: 6,
+    marginRight: 16,
+    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFF',
   },
-  toggleBtnLeft: {
-    borderTopLeftRadius: 8,
-    borderBottomLeftRadius: 8,
-  },
-  toggleBtnRight: {
-    borderTopRightRadius: 8,
-    borderBottomRightRadius: 8,
-  },
-  toggleBtnActive: {
+  checkboxSelected: {
     backgroundColor: '#333',
-    borderColor: '#333',
   },
-  toggleBtnText: {
-    color: '#555',
-    fontWeight: '600',
+  cardInfo: {
+    flex: 1,
   },
-  toggleBtnTextActive: {
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 4,
+  },
+  cardSubtitle: {
+    fontSize: 14,
+    color: '#777',
+  },
+  button: {
+    backgroundColor: '#333',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 30,
+    marginBottom: 24,
+  },
+  buttonText: {
     color: '#FFF',
-  },
-  infoText: {
-    fontSize: 12,
-    color: '#4CAF50',
-    textAlign: 'center',
-    fontStyle: 'italic',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   modalOverlay: {
     flex: 1,

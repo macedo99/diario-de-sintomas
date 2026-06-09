@@ -1,27 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
-  TextInput, 
   TouchableOpacity, 
   KeyboardAvoidingView, 
   Platform, 
   ScrollView,
-  Modal
+  Modal,
+  ActivityIndicator
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
+import * as Location from 'expo-location';
 import { styles } from './styles';
 import { MenuSuperior } from '../../componentes/MenuSuperior/MenuSuperior';
+import { InputPadrao } from '../../componentes/InputPadrao/InputPadrao';
+import { BotaoPadrao } from '../../componentes/BotaoPadrao/BotaoPadrao';
 
 export function NovoRegistro({ navigation }: any) {
   const [menuVisivel, setMenuVisivel] = useState(false);
-  
   const [modalSeletorVisivel, setModalSeletorVisivel] = useState(false);
-  const [condicaoSelecionada, setCondicaoSelecionada] = useState('Enxaqueca');
+
+  const comorbidadesDoUsuario = ['Enxaqueca', 'Pressão Arterial']; 
+  const [condicaoSelecionada, setCondicaoSelecionada] = useState(comorbidadesDoUsuario[0] || '');
 
   const [notasGerais, setNotasGerais] = useState('');
-
   const [intensidade, setIntensidade] = useState('');
   const [gatilhos, setGatilhos] = useState('');
   const [medicou, setMedicou] = useState(false);
@@ -31,31 +34,66 @@ export function NovoRegistro({ navigation }: any) {
   const [diastolica, setDiastolica] = useState('');
   const [bpm, setBpm] = useState('');
 
-  const [glicemia, setGlicemia] = useState('');
-  const [momentoMedicao, setMomentoMedicao] = useState('');
-  const [aplicouInsulina, setAplicouInsulina] = useState(false);
-  const [unidadesInsulina, setUnidadesInsulina] = useState('');
+  const [dadosClima, setDadosClima] = useState<any>(null);
+  const [buscandoClima, setBuscandoClima] = useState(true);
 
-  const [sintomasAlergia, setSintomasAlergia] = useState('');
+  useEffect(() => {
+    buscarDadosAmbientais();
+  }, []);
+
+  const buscarDadosAmbientais = async () => {
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setBuscandoClima(false);
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      const lat = location.coords.latitude;
+      const lon = location.coords.longitude;
+
+      const API_KEY = 'eacbf04854e240dda8664919240506'; 
+      const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${lat},${lon}&aqi=yes`);
+      const data = await response.json();
+
+      setDadosClima({
+        temperatura: data.current.temp_c,
+        umidadeRelativa: data.current.humidity,
+        indiceQualidadeAr: data.current.air_quality ? data.current.air_quality['us-epa-index'] : 'N/D'
+      });
+      setBuscandoClima(false);
+    } catch (error) {
+      setBuscandoClima(false);
+    }
+  };
 
   const handleSalvar = () => {
-    console.log('Condição:', condicaoSelecionada);
-    console.log('Notas:', notasGerais);
+    const registroFinal = {
+      tipoCondicao: condicaoSelecionada.toLowerCase().replace(' ', '_'),
+      dataHora: new Date().toISOString(),
+      notasGerais,
+      dadosEspecificos: {},
+      climaLocal: dadosClima || 'Dados não capturados'
+    };
+
+    if (condicaoSelecionada === 'Enxaqueca') {
+      registroFinal.dadosEspecificos = { intensidadeDor: intensidade, gatilhosSuspeitos: gatilhos, medicou, medicamentoUtilizado: medicamento };
+    } else if (condicaoSelecionada === 'Pressão Arterial') {
+      registroFinal.dadosEspecificos = { sistolica, diastolica, batimentosPorMinuto: bpm };
+    }
+
+    console.log('JSON FINAL:', JSON.stringify(registroFinal, null, 2));
     navigation.goBack();
   };
 
-  // Função que renderiza os campos dinamicamente
   const renderFormulariosDinamicos = () => {
     switch (condicaoSelecionada) {
       case 'Enxaqueca':
         return (
           <>
-            <Text style={styles.label}>Intensidade da dor (0-10):</Text>
-            <TextInput style={styles.input} placeholder="Ex: 8" keyboardType="numeric" value={intensidade} onChangeText={setIntensidade} />
-            
-            <Text style={styles.label}>Possíveis Gatilhos:</Text>
-            <TextInput style={styles.input} placeholder="Ex: Estresse, luz forte" value={gatilhos} onChangeText={setGatilhos} />
-            
+            <InputPadrao label="Intensidade da dor (0-10)" placeholder="Ex: 8" keyboardType="numeric" value={intensidade} onChangeText={setIntensidade} />
+            <InputPadrao label="Possíveis Gatilhos" placeholder="Ex: Estresse, luz forte" value={gatilhos} onChangeText={setGatilhos} />
             <Text style={styles.label}>Tomou medicação?</Text>
             <View style={styles.toggleContainer}>
               <TouchableOpacity style={[styles.toggleBtn, styles.toggleBtnLeft, medicou && styles.toggleBtnActive]} onPress={() => setMedicou(true)}>
@@ -65,13 +103,7 @@ export function NovoRegistro({ navigation }: any) {
                 <Text style={!medicou ? styles.toggleBtnTextActive : styles.toggleBtnText}>Não</Text>
               </TouchableOpacity>
             </View>
-
-            {medicou && (
-              <>
-                <Text style={styles.label}>Qual medicamento?</Text>
-                <TextInput style={styles.input} placeholder="Ex: Neosaldina" value={medicamento} onChangeText={setMedicamento} />
-              </>
-            )}
+            {medicou && <InputPadrao label="Qual medicamento?" placeholder="Ex: Neosaldina" value={medicamento} onChangeText={setMedicamento} />}
           </>
         );
 
@@ -80,65 +112,16 @@ export function NovoRegistro({ navigation }: any) {
           <>
             <View style={styles.row}>
               <View style={styles.halfInput}>
-                <Text style={styles.label}>Sistólica:</Text>
-                <TextInput style={styles.input} placeholder="Ex: 120" keyboardType="numeric" value={sistolica} onChangeText={setSistolica} />
+                <InputPadrao label="Sistólica" placeholder="Ex: 120" keyboardType="numeric" value={sistolica} onChangeText={setSistolica} />
               </View>
               <View style={styles.halfInput}>
-                <Text style={styles.label}>Diastólica:</Text>
-                <TextInput style={styles.input} placeholder="Ex: 80" keyboardType="numeric" value={diastolica} onChangeText={setDiastolica} />
+                <InputPadrao label="Diastólica" placeholder="Ex: 80" keyboardType="numeric" value={diastolica} onChangeText={setDiastolica} />
               </View>
             </View>
-            <Text style={styles.label}>Batimentos por minuto (BPM):</Text>
-            <TextInput style={styles.input} placeholder="Ex: 75" keyboardType="numeric" value={bpm} onChangeText={setBpm} />
+            <InputPadrao label="Batimentos (BPM)" placeholder="Ex: 75" keyboardType="numeric" value={bpm} onChangeText={setBpm} />
           </>
         );
-
-      case 'Diabetes':
-        return (
-          <>
-            <View style={styles.row}>
-              <View style={styles.halfInput}>
-                <Text style={styles.label}>Glicemia (mg/dL):</Text>
-                <TextInput style={styles.input} placeholder="Ex: 95" keyboardType="numeric" value={glicemia} onChangeText={setGlicemia} />
-              </View>
-              <View style={styles.halfInput}>
-                <Text style={styles.label}>Momento:</Text>
-                <TextInput style={styles.input} placeholder="Ex: Jejum" value={momentoMedicao} onChangeText={setMomentoMedicao} />
-              </View>
-            </View>
-
-            <Text style={styles.label}>Aplicou Insulina?</Text>
-            <View style={styles.toggleContainer}>
-              <TouchableOpacity style={[styles.toggleBtn, styles.toggleBtnLeft, aplicouInsulina && styles.toggleBtnActive]} onPress={() => setAplicouInsulina(true)}>
-                <Text style={aplicouInsulina ? styles.toggleBtnTextActive : styles.toggleBtnText}>Sim</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.toggleBtn, styles.toggleBtnRight, !aplicouInsulina && styles.toggleBtnActive]} onPress={() => setAplicouInsulina(false)}>
-                <Text style={!aplicouInsulina ? styles.toggleBtnTextActive : styles.toggleBtnText}>Não</Text>
-              </TouchableOpacity>
-            </View>
-
-            {aplicouInsulina && (
-              <>
-                <Text style={styles.label}>Unidades de Insulina:</Text>
-                <TextInput style={styles.input} placeholder="Ex: 10" keyboardType="numeric" value={unidadesInsulina} onChangeText={setUnidadesInsulina} />
-              </>
-            )}
-          </>
-        );
-
-      case 'Alergias':
-        return (
-          <>
-            <Text style={styles.label}>Intensidade dos Sintomas (0-10):</Text>
-            <TextInput style={styles.input} placeholder="Ex: 6" keyboardType="numeric" value={intensidade} onChangeText={setIntensidade} />
-            
-            <Text style={styles.label}>Sintomas Apresentados:</Text>
-            <TextInput style={styles.input} placeholder="Ex: Coriza, coceira" value={sintomasAlergia} onChangeText={setSintomasAlergia} />
-          </>
-        );
-      
-      default:
-        return null;
+      default: return null;
     }
   };
 
@@ -148,13 +131,9 @@ export function NovoRegistro({ navigation }: any) {
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
           
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.7}>
-              <Feather name="chevron-left" size={28} color="#333" />
-            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.goBack()}><Feather name="chevron-left" size={28} color="#333" /></TouchableOpacity>
             <Text style={styles.headerTitle}>Novo Registro</Text>
-            <TouchableOpacity onPress={() => setMenuVisivel(true)} activeOpacity={0.7}>
-              <Feather name="menu" size={28} color="#333" />
-            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setMenuVisivel(true)}><Feather name="menu" size={28} color="#333" /></TouchableOpacity>
           </View>
 
           <TouchableOpacity style={styles.dropdown} activeOpacity={0.7} onPress={() => setModalSeletorVisivel(true)}>
@@ -164,20 +143,19 @@ export function NovoRegistro({ navigation }: any) {
 
           {renderFormulariosDinamicos()}
 
-          <Text style={styles.label}>Notas Gerais:</Text>
-          <TextInput 
-            style={[styles.input, styles.textArea]} 
-            placeholder="Alguma observação extra?" 
-            multiline 
-            value={notasGerais} 
-            onChangeText={setNotasGerais} 
-          />
+          <InputPadrao label="Notas Gerais" placeholder="Alguma observação extra?" multiline numberOfLines={4} value={notasGerais} onChangeText={setNotasGerais} style={styles.textArea} />
 
-          <Text style={styles.infoText}>Data/Hora e dados do clima serão adicionados automaticamente a cada novo registro.</Text>
+          <View style={{ alignItems: 'center', marginBottom: 20 }}>
+            {buscandoClima ? (
+              <ActivityIndicator size="small" color="#777" />
+            ) : dadosClima ? (
+              <Text style={styles.infoText}>
+                Clima atualizado: {dadosClima.temperatura}°C | Umidade: {dadosClima.umidadeRelativa}%
+              </Text>
+            ) : null}
+          </View>
 
-          <TouchableOpacity style={styles.button} onPress={handleSalvar} activeOpacity={0.8}>
-            <Text style={styles.buttonText}>Salvar Registro</Text>
-          </TouchableOpacity>
+          <BotaoPadrao texto="Salvar Registro" onPress={handleSalvar} />
 
         </ScrollView>
       </KeyboardAvoidingView>
@@ -186,23 +164,12 @@ export function NovoRegistro({ navigation }: any) {
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
             <Text style={styles.modalTitle}>Selecione a Condição</Text>
-            
-            {['Enxaqueca', 'Pressão Arterial', 'Diabetes', 'Alergias'].map((opcao) => (
-              <TouchableOpacity 
-                key={opcao} 
-                style={styles.modalOption} 
-                onPress={() => {
-                  setCondicaoSelecionada(opcao);
-                  setModalSeletorVisivel(false);
-                }}
-              >
+            {comorbidadesDoUsuario.map((opcao) => (
+              <TouchableOpacity key={opcao} style={styles.modalOption} onPress={() => { setCondicaoSelecionada(opcao); setModalSeletorVisivel(false); }}>
                 <Text style={styles.modalOptionText}>{opcao}</Text>
               </TouchableOpacity>
             ))}
-            
-            <TouchableOpacity style={[styles.button, {marginTop: 20, marginBottom: 0}]} onPress={() => setModalSeletorVisivel(false)}>
-              <Text style={styles.buttonText}>Cancelar</Text>
-            </TouchableOpacity>
+            <BotaoPadrao texto="Cancelar" onPress={() => setModalSeletorVisivel(false)} style={{ marginTop: 20, backgroundColor: '#777' }} />
           </View>
         </View>
       </Modal>
