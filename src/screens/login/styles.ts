@@ -41,4 +41,11 @@ export const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     marginTop: 20,
   },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 30,
+    textAlign: 'center',
+  },
 });
